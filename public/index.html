@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Керування студентами</h1>
+    <form action="/add-student" method="POST">
+        <input type="text" name="firstName" placeholder="Ім'я" required>
+        <input type="text" name="lastName" placeholder="Прізвище" required>
+        <input type="number" name="age" placeholder="Вік" required>
+        <input type="text" name="course" placeholder="Курс" required>
+        <input type="text" name="faculty" placeholder="Факультет" required>
+        <input type="text" name="courses" placeholder="Курси (через кому)" required>
+        <button type="submit">Додати студента</button>
+    </form>
+    <h2>Список студентів</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ім'я</th>
+                <th>Прізвище</th>
+                <th>Вік</th>
+                <th>Курс</th>
+                <th>Факультет</th>
+                <th>Курси</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody id="student-list">
+            <!-- Додайте тут JavaScript для динамічного заповнення таблиці -->
+        </tbody>
+    </table>
+    <script>
+        // Отримання даних студентів та заповнення таблиці
+        fetch('/students')
+            .then(response => response.json())
+            .then(students => {
+                const studentList = document.getElementById('student-list');
+                students.forEach(student => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${student.firstName}</td>
+                        <td>${student.lastName}</td>
+                        <td>${student.age}</td>
+                        <td>${student.course}</td>
+                        <td>${student.faculty}</td>
+                        <td>${student.courses}</td>
+                        <td>
+                            <form action="/delete-student" method="POST">
+                                <input type="hidden" name="firstName" value="${student.firstName}">
+                                <button type="submit">Видалити</button>
+                            </form>
+                        </td>
+                    `;
+                    studentList.appendChild(row);
+                });
+            });
+    </script>
+</body>
+</html>
